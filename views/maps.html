@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+     #map_canvas {
+        width: 1024px;
+        height: 700px;
+      }
+</style>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+<script type="text/javascript">
+
+function initialize(){
+    var latlng = new google.maps.LatLng(60.195220947265625, 24.48237419128418);
+    var myOptions = {
+      zoom: 12,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+    var url = "/track";
+    var mypath = new Array();
+    $.getJSON(url, function (data) {
+      // alert(data[0].X + ' hjuh ' + data.length);
+      for(var i=0; i < data.length; i++){
+        mypath.push(new google.maps.LatLng(data[i].Y, data[i].X));
+      }
+
+      var polyline = new google.maps.Polyline({
+        path: mypath,
+        geodesic: true,
+        strokeColor: '#ff0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 3
+      });
+
+      polyline.setMap(map);
+      alert(google.maps.geometry.spherical.computeLength(polyline.getPath().getArray()).toString());
+    });
+}
+</script>
+</head>
+<body onload="initialize()">
+  <div id="map_canvas"></div>
+</body>
+</html>
