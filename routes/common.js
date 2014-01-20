@@ -15,11 +15,12 @@ exports.fileUpload = function(req, res, next){
  
         //split the url into an array and then get the last chunk and render it out in the send req.
     // var pathArray = req.files.uploadedFile.path.split( '/' );
+    req.session.uploadedFilePath = req.files.uploadedFile.path;
  
     res.send(util.format(' Task Complete \n uploaded %s (%d Kb) to %s as %s'
 			 , req.files.uploadedFile.name
 			 , req.files.uploadedFile.size / 1024 | 0
-			 , req.files.uploadedFile.path
+			 , req.session.uploadedFilePath
 			 , req.body.title
 			 , req.files.uploadedFile
 			));
@@ -41,7 +42,7 @@ exports.parseGPX = function(req, res) {
     var json = '';
 
     try {
-	var fileData = fs.readFileSync(testFilePath, 'ascii');
+	var fileData = fs.readFileSync(req.session.uploadedFilePath, 'ascii');
 	var parser = new xml2js.Parser();
 	parser.parseString(fileData.substring(0, fileData.length), function (err, result) {
 	    json = result;
