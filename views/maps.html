@@ -26,6 +26,8 @@ function initialize(){
     var mypath = new Array();
     $.getJSON(url, function (data) {
       // alert(data[0].X + ' hjuh ' + data.length);
+      map.setCenter(new google.maps.LatLng(data[0].Y, data[0].X));
+
       for(var i=0; i < data.length; i++){
         mypath.push(new google.maps.LatLng(data[i].Y, data[i].X));
       }
