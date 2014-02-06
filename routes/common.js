@@ -84,16 +84,13 @@ exports.listPoints = function(req, res) {
     var data = require('../data.js');
 
     data.connect();
-
     data.getTrackPoints(1, res);
-
-    data.disconnect();
 }
 
 exports.trackInfo = function(req, res) {
     var data = require('../data.js');
 
     data.connect();
+    console.log("trackId: " + req.param("trackId"));
     data.getDistance(req.param("trackId"), res);
-    data.disconnect();
 }
