@@ -24,8 +24,8 @@ function initialize(){
 
     var url = "/track";
     var mypath = new Array();
+
     $.getJSON(url, function (data) {
-      // alert(data[0].X + ' hjuh ' + data.length);
       map.setCenter(new google.maps.LatLng(data[0].Y, data[0].X));
 
       for(var i=0; i < data.length; i++){
@@ -45,17 +45,11 @@ function initialize(){
 }
 
 function getTrackInfo(id) {
-     $.ajax({
+  var url = "/trackinfo?trackId=" + id;
 
-     type: "GET",
-     url: "/trackinfo",
-     data: "trackId=" + id,
-     success: function(data) {
-           // data is ur summary
-          $('#track_info').html(data[0].distance);
-     }
-
-   });
+  $.getJSON(url, function (data) {
+    $('#track_info').html(data[0].distance);
+  });
 }
 </script>
 </head>
