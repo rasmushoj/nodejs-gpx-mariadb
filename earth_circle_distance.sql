@@ -25,7 +25,7 @@ begin
 
   set a = sin(d_lat / 2.0) * sin(d_lat / 2.0) + sin(d_lon / 2.0) * sin(d_lon / 2.0) * cos(\
 lat1) * cos(lat2);
-  set c = asin(sqrt(a));
+  set c = 2.0 * asin(sqrt(a));
 
   return R * c;
 end
