@@ -44,6 +44,7 @@ app.get('/track', common.listPoints);
 app.get('/showmap', function (req, res) {
     res.sendfile(__dirname + '/views/maps.html');
 });
+app.get('/trackinfo', common.trackInfo);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
