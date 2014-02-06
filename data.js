@@ -69,6 +69,29 @@ exports.getTrackPoints = function(trackId, httpRes) {
 	});
 }
 
+exports.getDistance = function(trackId, httpRes) {
+    var result = [];
+
+    client.query("SELECT SUM(earth_circle_distance(t1.gpsPoint, t2.gpsPoint)) AS distance \
+FROM trackpoints t1 INNER JOIN trackpoints t2 ON t2.pointId = (t1.pointId + 1) WHERE t1.tr\
+ackId = :pTrackId", { pTrackId: trackId })
+        .on('result', function(res) {
+
+            res.on('row', function(row) {
+                result.push(row);
+            })
+                .on('error', function(err) {
+                    console.log('Result error: ' + inspect(err));
+                })
+                .on('end', function(info) {
+                    console.log('Result finished successfully');
+                });
+        })
+        .on('end', function() {
+            httpRes.send(result);
+        });
+}
+
 exports.disconnect = function() {
     client.end();
 }
