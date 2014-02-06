@@ -76,9 +76,10 @@ exports.getDistance = function(trackId, httpRes) {
 FROM trackpoints t1 INNER JOIN trackpoints t2 ON t2.pointId = (t1.pointId + 1) WHERE t1.tr\
 ackId = :pTrackId", { pTrackId: trackId })
         .on('result', function(res) {
-
+	    console.log("Result: " + inspect(result));
             res.on('row', function(row) {
                 result.push(row);
+		console.log("Result row: " + inspect(row));
             })
                 .on('error', function(err) {
                     console.log('Result error: ' + inspect(err));
