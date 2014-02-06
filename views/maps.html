@@ -41,12 +41,27 @@ function initialize(){
       });
 
       polyline.setMap(map);
-      alert(google.maps.geometry.spherical.computeLength(polyline.getPath().getArray()).toString());
     });
+}
+
+function getTrackInfo(id) {
+     $.ajax({
+
+     type: "GET",
+     url: "/trackinfo",
+     data: "trackId=" + id,
+     success: function(data) {
+           // data is ur summary
+          $('#track_info').html(data[0].distance);
+     }
+
+   });
 }
 </script>
 </head>
 <body onload="initialize()">
   <div id="map_canvas"></div>
+  <a href="javascript:void(0);" onclick="getTrackInfo(1)">Get track distance</a>
+  <div id="track_info"></div>
 </body>
 </html>
