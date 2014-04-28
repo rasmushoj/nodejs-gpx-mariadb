@@ -41,8 +41,13 @@ app.get('/readfile', common.readFile);
 app.get('/parsegpx', common.parseGPX);
 app.get('/mariadb', common.mariadb);
 app.get('/track', common.listPoints);
+app.get('/xmltracks', common.xmlTracks);
+app.get('/xmltracksduration', common.xmlTracksDuration);
 app.get('/showmap', function (req, res) {
     res.sendfile(__dirname + '/views/maps.html');
+});
+app.get('/showxmlfiles', function (req, res) {
+    res.sendfile(__dirname + '/views/xmltracks.html');
 });
 app.get('/trackinfo', common.trackInfo);
 

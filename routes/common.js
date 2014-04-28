@@ -87,6 +87,20 @@ exports.listPoints = function(req, res) {
     data.getTrackPoints(1, res);
 }
 
+exports.xmlTracks = function(req, res) {
+    var data = require('../data.js');
+
+    data.connect();
+    data.getXMLTracks(res);
+}
+
+exports.xmlTracksDuration = function(req, res) {
+    var data = require('../data.js');
+
+    data.connect();
+    data.getXMLTracksDuration(res);
+}
+
 exports.trackInfo = function(req, res) {
     var data = require('../data.js');
 

@@ -69,6 +69,49 @@ exports.getTrackPoints = function(trackId, httpRes) {
 	});
 }
 
+exports.getXMLTracks = function(httpRes) {
+    var data = { tracks: {} };
+
+    client.query('SELECT filename, lon, lat FROM GPXSource ORDER BY time')
+	.on('result', function(res) {
+	    res.on('row', function(row) {
+		if (data.tracks[row['filename']] == undefined)
+		    data.tracks[row['filename']] = [];
+
+		data.tracks[row['filename']].push({ lon: row['lon'], lat: row['lat'] });
+	    })
+		.on('error', function(err) {
+                    console.log('Result error: ' + inspect(err));
+                })
+                .on('end', function(info) {
+                    console.log('Result finished successfully');
+                });
+        })
+        .on('end', function() {
+            httpRes.json(data);
+        });
+}
+
+exports.getXMLTracksDuration = function(httpRes) {
+    var data = [];
+
+    client.query('SELECT filename, TIMEDIFF(MAX(time), MIN(time)) AS duration  FROM GPXSource GROUP BY filename ORDER BY filename;')
+        .on('result', function(res) {
+            res.on('row', function(row) {
+                data.push(row);
+            })
+                .on('error', function(err) {
+                    console.log('Result error: ' + inspect(err));
+                })
+                .on('end', function(info) {
+                    console.log('Result finished successfully');
+                });
+        })
+        .on('end', function() {
+            httpRes.json(data);
+        });
+}
+
 exports.getDistance = function(trackId, httpRes) {
     var result = [];
 
