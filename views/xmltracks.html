@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+     #map_canvas {
+        width: 1024px;
+        height: 700px;
+      }
+</style>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+<script type="text/javascript">
+var colors = [
+  '#00ffff', '#000000', '#0000ff', '#ff00ff',
+  '#808080', '#008000', '#00ff00', '#800000',
+  '#000080', '#808000', '#800080', '#ff0000',
+  '#c0c0c0', '#008080', '#ffffff', '#ffff00'
+];
+
+function initialize(){
+    var latlng = new google.maps.LatLng(60.195220947265625, 24.48237419128418);
+    var myOptions = {
+      zoom: 12,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+    var url = "/xmltracks";
+    var trackPath;
+    var trackCount = 0;
+    var polyline;
+    var marker;
+    var pinImage;
+
+    $.getJSON(url, function (data) {
+      for (var fileName in data.tracks) {
+        trackPath = [];
+ 
+        for(var i=0; i < data.tracks[fileName].length; i++){
+          if (i == 0)
+            map.setCenter(new google.maps.LatLng(data.tracks[fileName][i].lat, data.tracks[fileName][i].lon));
+
+          trackPath.push(new google.maps.LatLng(data.tracks[fileName][i].lat, data.tracks[fileName][i].lon));
+        }
+
+        polyline = new google.maps.Polyline({
+          path: trackPath,
+          geodesic: true,
+          strokeColor: colors[trackCount],
+          strokeOpacity: 1.0,
+          strokeWeight: 3
+        });
+
+        pinImage = {
+          url: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + colors[trackCount].replace("#",""),
+          size: new google.maps.Size(21, 34),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(10, 34)
+        };
+
+        marker = new google.maps.Marker({
+          position: trackPath[parseInt(trackPath.length / 2)],
+          icon: pinImage,
+          title: fileName
+        });
+
+        console.log(colors[trackCount]);
+        console.log(fileName);
+        
+        polyline.setMap(map);
+        marker.setMap(map);
+        
+        trackCount++;
+      }
+    });
+}
+
+function getXMLTracksDuration() {
+  var url = "/xmltracksduration";
+  var durations = "";
+
+  $.getJSON(url, function (data) {
+    for (var i = 0; i < data.length; i++) {
+      durations = durations + "<font color='" + colors[i] + "'>Track " + (i + 1) + ":</font> " + data[i].duration + "<br/>";
+    }
+    document.getElementById("track_info").innerHTML = durations;
+  });
+}
+</script>
+</head>
+<body onload="initialize()">
+  <div id="map_canvas"></div>
+  <a href="javascript:void(0);" onclick="getXMLTracksDuration()">Get track durations</a>
+  <div id="track_info"></div>
+</body>
+</html>
